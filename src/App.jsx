@@ -56,7 +56,7 @@ const App = () => {
   const onConnected = () => {
     console.log('Socket connected');
 
-    // for service/controller exceptions
+    // for service/controller and validation exceptions
     stompClientRef.current.subscribe('/user/queue/errors', onErrorReceived, {
       'Authorization': `Bearer ${token}`,
       'X-CSRF-TOKEN': csrfToken,
