@@ -56,6 +56,14 @@ const App = () => {
   const onConnected = () => {
     console.log('Socket connected');
 
+    // for service/controller exceptions
+    stompClientRef.current.subscribe('/user/queue/errors', onErrorReceived, {
+      'Authorization': `Bearer ${token}`,
+      'X-CSRF-TOKEN': csrfToken,
+      'Content-Type': 'application/json'
+    });
+    
+    // for interceptors
     stompClientRef.current.subscribe('/topic/error', onErrorReceived, {
       'Authorization': `Bearer ${token}`,
       'X-CSRF-TOKEN': csrfToken,
@@ -81,7 +89,7 @@ const App = () => {
   };
 
   const onErrorReceived = (payload) => {
-    console.error('Error received:', payload.body);
+    console.error('Error Body:', payload.body);
 
     setError(prev => [...prev, payload.body]);
     scrollToBottom();
@@ -107,7 +115,7 @@ const App = () => {
 
   const sendMessage = (event) => {
     event.preventDefault();
-    if (stompClientRef.current && message.trim()) {
+    if (stompClientRef.current ) {
       const chatMessage = {
         isReplied: false,
         content: message.trim(),
